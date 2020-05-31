@@ -19,8 +19,8 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
         return sum(self[feature].dropna()) / self.count(feature)
 
     def std(self, feature: str):
-        mean = self.mean(feature)
-        mean = sum(np.abs(self[feature].dropna() - mean) ** 2) / self.count(feature)
+        dif = self[feature].dropna() - self.mean(feature)
+        mean = sum(np.abs(dif) ** 2) / self.count(feature)
         return np.sqrt(mean)
 
     def min(self, feature: str):
@@ -45,13 +45,3 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
         d0 = arr[int(f)] * (c - k)
         d1 = arr[int(c)] * (k - f)
         return d0 + d1
-
-
-if __name__ == "__main__":
-    csv_path = "/Users/Student21/Downloads/resources/dataset_train.csv"
-
-    data = HogwartsDataDescriber.read_csv(csv_path)
-
-    feature = data.columns[0]
-    print(data.std(feature))
-    print(np.std(data[feature]))

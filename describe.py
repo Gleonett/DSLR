@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 from argparse import ArgumentParser
 
 from data_analysis.data import HogwartsDataDescriber
@@ -22,7 +20,7 @@ def describe(csv_path: str):
             print(f'{abbreviation(feature):15.15}', end=' |')
         else:
             print(f'{feature:15.15}', end=' |')
-        if data.is_numeric(feature):
+        if data.is_numeric(feature) and data.count(feature) != 0:
             print(f'{data.count(feature):>12.4f}', end=' |')
             print(f'{data.mean(feature):>12.4f}', end=' |')
             print(f'{data.std(feature):>12.4f}', end=' |')
@@ -37,8 +35,7 @@ def describe(csv_path: str):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument('config_path', type=str,
-                        help='Path to .csv file')
+    parser.add_argument('data_path', type=str, help='Path to .csv file')
     args = parser.parse_args()
 
-    describe(args.config_path)
+    describe(args.data_path)
