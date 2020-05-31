@@ -1,9 +1,18 @@
+"""
+Display information for all numerical features
+"""
+
 from argparse import ArgumentParser
 
 from data_analysis.data import HogwartsDataDescriber
 
 
 def abbreviation(string: str):
+    """
+    Abbreviation for title
+    :param string:
+    :return: str
+    """
     string_list = string.split(" ")
     abb = ""
     for word in string_list:

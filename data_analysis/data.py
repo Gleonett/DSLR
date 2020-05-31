@@ -1,3 +1,7 @@
+"""
+Class for data description
+"""
+
 import numpy as np
 import pandas as pd
 from abc import ABC
@@ -7,35 +11,79 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
 
     @staticmethod
     def read_csv(csv_path):
+        """
+        Read .csv file
+        :param csv_path: path to .csv file
+        :return: HogwartsDataDescriber
+        """
         return HogwartsDataDescriber(pd.read_csv(csv_path))
 
     def is_numeric(self, feature: str):
+        """
+        Check if column contains only numeric values
+        :param feature: column name
+        :return: Bool
+        """
         return np.issubdtype(self[feature].dtype, np.number)
 
     def count(self, feature: str):
+        """
+        Number of the column elements without nans
+        :param feature: column name
+        :return: int
+        """
         return len(self[feature].dropna())
 
     def mean(self, feature: str):
+        """
+        Mean value of the column elements
+        :param feature: column name
+        :return: float
+        """
         return sum(self[feature].dropna()) / self.count(feature)
 
     def std(self, feature: str):
+        """
+        Compute the standard deviation, a measure of the spread
+        of a distribution, of the column elements
+
+        std = sqrt(mean(abs(x - x.mean())**2))
+        :param feature: column name
+        :return: float
+        """
         dif = self[feature].dropna() - self.mean(feature)
         mean = sum(np.abs(dif) ** 2) / self.count(feature)
         return np.sqrt(mean)
 
     def min(self, feature: str):
+        """
+        Minimum value of the column elements
+        :param feature: column name
+        :return: float
+        """
         tmp = np.nan
         for val in self[feature].dropna():
             tmp = tmp if val > tmp else val
         return tmp
 
     def max(self, feature: str):
+        """
+        Maximum value of the column elements
+        :param feature: column name
+        :return: float
+        """
         tmp = -np.nan
         for val in self[feature].dropna():
             tmp = tmp if val < tmp else val
         return tmp
 
     def percentile(self, feature: str, percent: float):
+        """
+        Compute the percentile of the column elements
+        :param feature: column name
+        :param percent: value must be between 0 and 100 inclusive
+        :return: float
+        """
         arr = sorted(self[feature].dropna())
         k = (len(arr) - 1) * percent / 100
         f = np.floor(k)
