@@ -4,7 +4,7 @@ Display information for all numerical features
 
 from argparse import ArgumentParser
 
-from data_analysis.data import HogwartsDataDescriber
+from data_describer import HogwartsDataDescriber
 
 
 def abbreviation(string: str):

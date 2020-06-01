@@ -2,37 +2,39 @@
 Plot course marks distribution
 """
 
-import numpy as np
 import matplotlib.pyplot as plt
 from argparse import ArgumentParser
 
-from data_analysis.data import HogwartsDataDescriber
+from data_describer import HogwartsDataDescriber
 
 
-def show_course_marks_distribution(csv_path: str):
+def histogram(plot: plt,
+              df: HogwartsDataDescriber,
+              course: str):
+    """
+    Scatter plot for 2 courses
+    :param plot: matplotlib.axes._subplots.AxesSubplot
+    :param df: HogwartsDataDescriber
+    :param course: course name
+    :return: None
+    """
+    for house, color in zip(df.houses, df.colors):
+        # choose course marks of students belonging to the house
+        marks = df[course][df['Hogwarts House'] == house].dropna()
+
+        plot.hist(marks, color=color, alpha=0.5)
+
+
+def show_course_marks_distribution(csv_path: str, course: str):
     # obtaining data for plotting
     df = HogwartsDataDescriber.read_csv(csv_path)
-    houses = sorted(set(df['Hogwarts House']))
-    colors = ['red', 'blue', 'green', 'yellow']
-    courses = list(df.columns[6:]) + [None] * 3
-    courses = np.array(courses).reshape(4, 4)
+    _, ax = plt.subplots()
 
-    fig, axs = plt.subplots(4, 4, figsize=(25.6, 14.4), tight_layout=True)
-    for row_courses, row_plt in zip(courses, axs):
-        for course, col_plt in zip(row_courses, row_plt):
-            if not course:
-                fig.delaxes(col_plt)
-                continue
-
-            col_plt.set_title(course)
-            for house, color in zip(houses, colors):
-                # choose marks of students belonging to the house
-                marks = df[course][df['Hogwarts House'] == house].dropna()
-                # plot marks
-                col_plt.hist(marks, color=color, alpha=0.5)
-                col_plt.legend(houses, frameon=False)
-                col_plt.set_xlabel('Marks')
-                col_plt.set_ylabel('Students')
+    histogram(ax, df, course)
+    ax.set_title(course)
+    ax.legend(df.houses, frameon=False)
+    ax.set_xlabel('Marks')
+    ax.set_ylabel('Students')
     plt.show()
 
 
@@ -42,6 +44,10 @@ if __name__ == "__main__":
                         type=str,
                         default='data/dataset_train.csv',
                         help='Path to dataset_train.csv file')
+    parser.add_argument('--course',
+                        type=str,
+                        default='Care of Magical Creatures',
+                        help='Name of the course to plot')
     args = parser.parse_args()
 
-    show_course_marks_distribution(args.data_path)
+    show_course_marks_distribution(args.data_path, args.course)
