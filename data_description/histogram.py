@@ -42,7 +42,7 @@ if __name__ == "__main__":
     parser = ArgumentParser()
     parser.add_argument('--data_path',
                         type=str,
-                        default='data/dataset_train.csv',
+                        default='../data/dataset_train.csv',
                         help='Path to dataset_train.csv file')
     parser.add_argument('--course',
                         type=str,
