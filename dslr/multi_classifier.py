@@ -30,9 +30,9 @@ class OneVsAllLogisticRegression(object):
 
         p = []
         for model in self.models:
-            p.append(model.predict(x).numpy())
-        p = np.array(p).T
-        p = np.argmax(p, axis=1)
+            p.append(model.predict(x))
+        p = torch.stack(p).t()
+        p = torch.argmax(p, dim=1)
         labels = self.labels[p]
         return labels
 

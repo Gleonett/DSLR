@@ -1,5 +1,4 @@
 import torch
-import numpy as np
 
 
 class StandardScale(object):
@@ -10,10 +9,10 @@ class StandardScale(object):
     def fit(self, x):
         mean, std = [], []
         for i in range(0, x.shape[1]):
-            mean.append(np.mean(x[:, i]))
-            std.append(np.std(x[:, i]))
-        self.mean = np.array(mean)
-        self.std = np.array(std)
+            mean.append(torch.mean(x[:, i]))
+            std.append(torch.std(x[:, i]))
+        self.mean = torch.stack(mean)
+        self.std = torch.stack(std)
 
     def __call__(self, x):
         return (x - self.mean) / self.std

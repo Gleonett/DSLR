@@ -1,0 +1,24 @@
+
+# Model parameters
+device: "cpu"
+lr: 0.01
+max_iterations: 50
+
+# Preprocessing
+scale: "min_max"    # "min_max" or "standard"
+
+# Features to train on
+features:
+    Arithmancy: False
+    Astronomy: False
+    Herbology: True
+    Defense Against the Dark Arts: False
+    Divination: True
+    Muggle Studies: False
+    Ancient Runes: True
+    History of Magic: False
+    Transfiguration: False
+    Potions: False
+    Care of Magical Creatures: False
+    Charms: True
+    Flying: True
