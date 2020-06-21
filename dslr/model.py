@@ -4,10 +4,12 @@ Logistic regression implementation using PyTorch tensors
 import torch
 import numpy as np
 
+from dslr.pytorch_utils import to_tensor
+
 
 class LogisticRegression(object):
 
-    def __init__(self, device: str = "cpu",
+    def __init__(self, device: torch.device,
                  dtype: torch.dtype = torch.float,
                  transform=None,
                  lr=0.00001,
@@ -16,35 +18,28 @@ class LogisticRegression(object):
         :param device: "cpu" or "cuda:{device_index}" usually device_index = 0
         :param dtype: type of data
         """
-        self.device = self.get_device(device)
+        self.device = device
         self.dtype = dtype
-        self.transform=transform
+        self.transform = transform
         self.a = np.random.rand(1)[0] - 0.5
         self.b = None
         self.lr = lr
         self.max_iterations = max_iterations
 
-    @staticmethod
-    def get_device(device):
-        if "cpu" not in device:
-            if torch.cuda.is_available():
-                # TODO: test exception of wrong device index on machine with cuda
-                device = torch.device(device)
-            else:
-                exit("Cuda not available")
-        else:
-            device = torch.device(device)
-        return device
-
     def predict(self, x):
-        return 1.0 / (1.0 + np.exp(-x.dot(self.b) - self.a))
+        return 1.0 / (1.0 + torch.exp(-x @ self.b - self.a))
 
     def fit(self, x, y):
         if self.transform is not None:
             self.transform.fit(x)
             x = self.transform(x)
 
-        self.b = np.random.rand(x.shape[1]) - 0.5
+        if type(x) != torch.Tensor:
+            x = to_tensor(x, self.device, self.dtype)
+        if type(y) != torch.Tensor:
+            y = to_tensor(y, self.device, self.dtype)
+
+        self.b = torch.randn(x.shape[1]).uniform_(-0.5, 0.5)
         for i in range(self.max_iterations):
             tmp_a, tmp_b = self._calculate_anti_gradient(x, y)
             self.a = self.a + self.lr * tmp_a
@@ -52,9 +47,13 @@ class LogisticRegression(object):
 
     def _calculate_anti_gradient(self, x, y):
         p = self.predict(x)
-        da = np.sum(y - p)
-        db = x.transpose().dot(y - p)
+        dif = y - p
+        da = torch.sum(dif)
+        db = x.t() @ dif
         return da, db
+
+    def _to_tensor(self, x):
+        return torch.from_numpy(x).to(self.device, self.dtype)
 
 
 if __name__ == "__main__":

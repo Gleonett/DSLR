@@ -27,7 +27,6 @@ def train_test_split(x, y, test_size=0.3, random_state=None):
 
 
 def evaluate(data_path):
-    # houses = ['Gryffindor', 'Slytherin', 'Ravenclaw', 'Hufflepuff']
     choosed_courses = ['Ancient Runes', 'Divination', 'Herbology', 'Charms', 'Flying']
 
     df = pd.read_csv(data_path)
@@ -42,8 +41,8 @@ def evaluate(data_path):
 
     model = OneVsAllLogisticRegression(
         transform=MinMaxScale(),
-        lr=0.00001,
-        max_iterations=50000
+        lr=0.01,
+        max_iterations=50
     )
     model.fit(X_train, y_train)
     p = model.predict(X_test)

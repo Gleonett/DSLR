@@ -1,3 +1,4 @@
+import torch
 import numpy as np
 
 
@@ -26,10 +27,10 @@ class MinMaxScale(object):
     def fit(self, x):
         minimum, maximum = [], []
         for i in range(x.shape[1]):
-            minimum.append(np.min(x[:, i]))
-            maximum.append(np.max(x[:, i]))
-        self.min = np.array(minimum)
-        self.max = np.array(maximum)
+            minimum.append(torch.min(x[:, i]))
+            maximum.append(torch.max(x[:, i]))
+        self.min = torch.stack(minimum)
+        self.max = torch.stack(maximum)
 
     def __call__(self, x):
         return (x - self.min) / (self.max - self.min)
