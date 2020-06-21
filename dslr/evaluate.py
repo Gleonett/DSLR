@@ -1,15 +1,17 @@
 import numpy as np
 import pandas as pd
-from matplotlib import pyplot as plt
+from time import time
+
 from sklearn.metrics import accuracy_score
 
-from dslr.model import LogisticRegression
+from dslr.multi_classifier import OneVsAllLogisticRegression
+from dslr.preprocessing import MinMaxScale, StandardScale
+
 
 def train_test_split(x, y, test_size=0.3, random_state=None):
     if random_state:
         np.random.seed(random_state)
 
-    y = y.T
     p = np.random.permutation(len(x))
 
     x_offset = int(len(x) * test_size)
@@ -21,46 +23,33 @@ def train_test_split(x, y, test_size=0.3, random_state=None):
     y_train = y[p][y_offset:]
     y_test = y[p][:y_offset]
 
-    return X_train, X_test, y_train.T, y_test.T
-
-class StandardScaler(object):
-  def __init__(self, mean=np.array([]), std=np.array([])):
-    self._mean = mean
-    self._std = std
-
-  def fit(self, X):
-    for i in range(0, X.shape[1]):
-      self._mean = np.append(self._mean, np.mean(X[:, i]))
-      self._std = np.append(self._std, np.std(X[:, i]))
-
-  def transform(self, X):
-    return ((X - self._mean) / self._std)
-
-def labels_split(y, houses):
-    new_ys = np.zeros((len(houses), y.shape[0]))
-    for house, new_y in zip(houses, new_ys):
-        new_y[np.where(y == house)] = 1
-    return new_ys
+    return X_train, X_test, y_train, y_test
 
 
-class MinMaxScaler(object):
-  def __init__(self, min=np.array([]), std=np.array([])):
-    self.min = min
-    self.max = std
+def evaluate(data_path):
+    # houses = ['Gryffindor', 'Slytherin', 'Ravenclaw', 'Hufflepuff']
+    choosed_courses = ['Ancient Runes', 'Divination', 'Herbology', 'Charms', 'Flying']
 
-  def fit(self, X):
-    for i in range(0, X.shape[1]):
-      self.min = np.append(self.min, np.min(X[:, i]))
-      self.max = np.append(self.max, np.max(X[:, i]))
+    df = pd.read_csv(data_path)
+    for course in choosed_courses:
+        df = df.dropna(subset=[course])
+        # df[course].fillna(df[course].median())
 
-  def transform(self, X):
-    return (X - self.min) / (self.max - self.min)
+    x = np.array(df[choosed_courses].values, dtype=float)
+    y = df.values[:, 1]
 
-def labels_split(y, houses):
-    new_ys = np.zeros((len(houses), y.shape[0]))
-    for house, new_y in zip(houses, new_ys):
-        new_y[np.where(y == house)] = 1
-    return new_ys
+    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=5)
+
+    model = OneVsAllLogisticRegression(
+        transform=MinMaxScale(),
+        lr=0.00001,
+        max_iterations=50000
+    )
+    model.fit(X_train, y_train)
+    p = model.predict(X_test)
+
+    print("Wrong predictions:", sum(y_test != p))
+    print("Accuracy:", np.round(accuracy_score(y_test, p), 4))
 
 
 if __name__ == "__main__":
@@ -72,39 +61,4 @@ if __name__ == "__main__":
                         default='../data/dataset_train.csv',
                         help='Path to dataset_train.csv file')
     args = parser.parse_args()
-    houses = ['Gryffindor', 'Slytherin', 'Ravenclaw', 'Hufflepuff']
-    choosed_courses = ['Defense Against the Dark Arts', 'Muggle Studies', 'Divination', 'Herbology', 'Charms']
-
-    df = pd.read_csv(args.data_path)
-    for course in choosed_courses:
-        df = df.dropna(subset=[course])
-    x = np.array(df.values[:, [9, 17, 8, 10, 11]], dtype=float)
-    y = df.values[:, 1]
-    y = labels_split(y, houses)
-
-    X_train, X_test, y_train, y_test = train_test_split(x, y, test_size=0.3, random_state=4)
-
-    # sc = StandardScaler()
-    sc = MinMaxScaler()
-    sc.fit(X_train)
-
-    X_train_std = sc.transform(X_train)
-    X_test_std = sc.transform(X_test)
-
-    models = []
-    for bin_y in y_train:
-        lr = LogisticRegression()
-        lr.fit(X_train_std, bin_y)
-        models.append(lr)
-
-    p = []
-    for model in models:
-        p.append(model.predict(X_test_std))
-    p = np.array(p).T
-
-    y_pred = np.zeros(y_test.shape[0])
-    y_pred = np.argmax(p, axis=1)
-    y_test = np.argmax(y_test.T, axis=1)
-    print(y_pred)
-    print("Wrong predictions:", sum(y_test != y_pred))
-    print("Accuracy:", accuracy_score(y_test, y_pred))
+    evaluate(args.data_path)

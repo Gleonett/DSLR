@@ -7,17 +7,22 @@ import numpy as np
 
 class LogisticRegression(object):
 
-    def __init__(self, device: str = "cpu", dtype: torch.dtype = torch.float):
+    def __init__(self, device: str = "cpu",
+                 dtype: torch.dtype = torch.float,
+                 transform=None,
+                 lr=0.00001,
+                 max_iterations=50000):
         """
         :param device: "cpu" or "cuda:{device_index}" usually device_index = 0
         :param dtype: type of data
         """
         self.device = self.get_device(device)
         self.dtype = dtype
+        self.transform=transform
         self.a = np.random.rand(1)[0] - 0.5
         self.b = None
-        self.lr = 0.01
-        self.max_iterations = 50
+        self.lr = lr
+        self.max_iterations = max_iterations
 
     @staticmethod
     def get_device(device):
@@ -35,6 +40,10 @@ class LogisticRegression(object):
         return 1.0 / (1.0 + np.exp(-x.dot(self.b) - self.a))
 
     def fit(self, x, y):
+        if self.transform is not None:
+            self.transform.fit(x)
+            x = self.transform(x)
+
         self.b = np.random.rand(x.shape[1]) - 0.5
         for i in range(self.max_iterations):
             tmp_a, tmp_b = self._calculate_anti_gradient(x, y)
