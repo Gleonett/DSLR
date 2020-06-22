@@ -32,7 +32,7 @@ class OneVsAllLogisticRegression(object):
         for model in self.models:
             p.append(model.predict(x))
         p = torch.stack(p).t()
-        p = torch.argmax(p, dim=1)
+        p = torch.argmax(p, dim=1).cpu()
         labels = self.labels[p]
         return labels
 

@@ -43,7 +43,7 @@ class LogisticRegression(object):
             self.transform.fit(x)
             x = self.transform(x)
 
-        self.b = torch.randn(x.shape[1]).uniform_(-0.5, 0.5)
+        self.b = torch.randn(x.shape[1]).uniform_(-0.5, 0.5).to(self.device)
         for i in range(self.max_iterations):
             tmp_a, tmp_b = self._calculate_anti_gradient(x, y)
             self.a = self.a + self.lr * tmp_a
