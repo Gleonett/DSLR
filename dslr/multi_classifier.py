@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 
-from dslr.model import LogisticRegression
+from dslr.classifier import LogisticRegression
 from dslr.pytorch_utils import get_device, to_tensor
 
 

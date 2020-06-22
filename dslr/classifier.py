@@ -31,17 +31,17 @@ class LogisticRegression(object):
         self.max_iterations = max_iterations
 
     def predict(self, x):
-        return 1.0 / (1.0 + torch.exp(-x @ self.b - self.a))
+        return 1.0 / (1.0 + torch.exp(x @ -self.b - self.a))
 
     def fit(self, x, y):
-        if self.transform is not None:
-            self.transform.fit(x)
-            x = self.transform(x)
-
         if type(x) != torch.Tensor:
             x = to_tensor(x, self.device, self.dtype)
         if type(y) != torch.Tensor:
             y = to_tensor(y, self.device, self.dtype)
+
+        if self.transform is not None:
+            self.transform.fit(x)
+            x = self.transform(x)
 
         self.b = torch.randn(x.shape[1]).uniform_(-0.5, 0.5)
         for i in range(self.max_iterations):

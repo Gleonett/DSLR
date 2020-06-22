@@ -1,4 +1,3 @@
-import torch
 
 
 class StandardScale(object):
@@ -7,12 +6,8 @@ class StandardScale(object):
         self.std = std
 
     def fit(self, x):
-        mean, std = [], []
-        for i in range(0, x.shape[1]):
-            mean.append(torch.mean(x[:, i]))
-            std.append(torch.std(x[:, i]))
-        self.mean = torch.stack(mean)
-        self.std = torch.stack(std)
+        self.mean = x.mean(dim=0)
+        self.std = x.std(dim=0)
 
     def __call__(self, x):
         return (x - self.mean) / self.std
@@ -24,12 +19,8 @@ class MinMaxScale(object):
         self.max = maximum
 
     def fit(self, x):
-        minimum, maximum = [], []
-        for i in range(x.shape[1]):
-            minimum.append(torch.min(x[:, i]))
-            maximum.append(torch.max(x[:, i]))
-        self.min = torch.stack(minimum)
-        self.max = torch.stack(maximum)
+        self.min = x.min(dim=0).values
+        self.max = x.max(dim=0).values
 
     def __call__(self, x):
         return (x - self.min) / (self.max - self.min)

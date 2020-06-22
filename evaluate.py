@@ -9,7 +9,7 @@ from dslr.multi_classifier import OneVsAllLogisticRegression
 
 
 scale = {
-    "min_max": MinMaxScale(),
+    "minmax": MinMaxScale(),
     "standard": StandardScale()
 }
 

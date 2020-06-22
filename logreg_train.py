@@ -1,5 +1,6 @@
 import numpy as np
 import pandas as pd
+from time import time
 from argparse import ArgumentParser
 
 from config import Config
@@ -8,9 +9,10 @@ from dslr.multi_classifier import OneVsAllLogisticRegression
 
 
 scale = {
-    "min_max": MinMaxScale(),
+    "minmax": MinMaxScale(),
     "standard": StandardScale()
 }
+
 
 def train(data_path, config_path):
     config = Config(config_path)
@@ -18,13 +20,16 @@ def train(data_path, config_path):
     mask = np.array(list(config.features.values()))
     choosed_courses = courses[mask]
 
+    preparation_t = time()
     df = pd.read_csv(data_path)
     for course in choosed_courses:
         df = df.dropna(subset=[course])
 
     x = np.array(df[choosed_courses].values, dtype=float)
     y = df.values[:, 1]
+    preparation_t = time() - preparation_t
 
+    train_t = time()
     model = OneVsAllLogisticRegression(
         device=config.device,
         transform=scale[config.scale],
@@ -32,6 +37,11 @@ def train(data_path, config_path):
         max_iterations=config.max_iterations
     )
     model.fit(x, y)
+    train_t = time() - train_t
+
+    print("Preparation time:", np.round(preparation_t, 4))
+    print("Training time:", np.round(train_t, 4))
+    print("All time:", np.round(preparation_t + train_t, 4))
 
 
 if __name__ == "__main__":
