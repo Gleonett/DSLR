@@ -58,3 +58,20 @@ class OneVsAllLogisticRegression(object):
         for label, new_y in zip(self.labels, splitted_labels):
             new_y[np.where(y == label)] = 1
         return splitted_labels
+
+    def save(self, path):
+        models_w = {"transform": self.transform.to_dictionary()}
+        for model, label in zip(self.models, self.labels):
+            models_w[label] = model.to_dictionary()
+        torch.save(models_w, path)
+
+    def load(self, path):
+        models_w = torch.load(path)
+
+        self.transform.from_dictionary(models_w.pop("transform"), self.device, self.dtype)
+        self.labels = np.array(list(models_w.keys()))
+
+        for w in models_w.values():
+            model = LogisticRegression(self.device, self.dtype, None, self.lr, self.max_iterations)
+            model.from_dictionary(w)
+            self.models.append(model)

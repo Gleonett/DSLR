@@ -58,3 +58,10 @@ class LogisticRegression(object):
 
     def _to_tensor(self, x):
         return torch.from_numpy(x).to(self.device, self.dtype)
+
+    def to_dictionary(self):
+        return {"a": self.a, "b": self.b}
+
+    def from_dictionary(self, dictionary):
+        self.a = dictionary["a"].to(self.device, self.dtype)
+        self.b = dictionary["b"].to(self.device, self.dtype)

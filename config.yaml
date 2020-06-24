@@ -1,7 +1,7 @@
 
 # Model parameters
 device: "cpu"
-lr: 0.01
+lr: 0.001
 max_iterations: 50
 
 # Preprocessing
@@ -12,7 +12,7 @@ features:
     Arithmancy: False
     Astronomy: False
     Herbology: True
-    Defense Against the Dark Arts: False
+    Defense Against the Dark Arts: True
     Divination: True
     Muggle Studies: False
     Ancient Runes: True
