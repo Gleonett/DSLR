@@ -1,3 +1,8 @@
+"""
+Script to train and evaluate one-vs-all logistic regression
+on ground truth dataset - dataset_truth.csv
+"""
+
 import os
 import pandas as pd
 from argparse import ArgumentParser
@@ -7,15 +12,15 @@ from logreg_train import train
 from logreg_predict import predict
 
 
-def evaluate(train_path,
-             test_path,
-             truth_path,
-             weights_path,
-             output_folder,
-             config_path):
+def evaluate(train_path: str,
+             test_path: str,
+             truth_path: str,
+             weights_path: str,
+             output_folder: str,
+             config_path: str):
 
     print("Training:")
-    train(train_path, config_path)
+    train(train_path, weights_path, config_path)
     print('+' * 30)
 
     print("Predicting:")
@@ -27,6 +32,7 @@ def evaluate(train_path,
 
     y_pred = pred['Hogwarts House']
     y_true = true['Hogwarts House']
+
     print("Wrong predictions:", sum(y_true != y_pred))
     print("Accuracy:", accuracy_score(y_true, y_pred))
 
@@ -44,7 +50,7 @@ if __name__ == '__main__':
                         help='Path to "dataset_truth.csv" file')
 
     parser.add_argument('--weights_path', type=str, default="data/weights.pt",
-                        help='Path to "weights.pt" file')
+                        help='Path to save weights file')
 
     parser.add_argument('--output_folder', type=str, default="data",
                         help='Path to folder where to save houses.csv')

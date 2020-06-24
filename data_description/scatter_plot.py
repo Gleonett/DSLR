@@ -42,19 +42,24 @@ def show_scatter_plot(csv_path: str, course1: str, course2: str):
 
 
 if __name__ == "__main__":
+
     parser = ArgumentParser()
+
     parser.add_argument('--data_path',
                         type=str,
                         default='../data/dataset_train.csv',
                         help='Path to dataset_train.csv file')
+
     parser.add_argument('--course1',
                         type=str,
                         default='Astronomy',
                         help='Name of the course for x axis')
+
     parser.add_argument('--course2',
                         type=str,
                         default='Defense Against the Dark Arts',
                         help='Name of the course for y axis')
+
     args = parser.parse_args()
 
     show_scatter_plot(args.data_path, args.course1, args.course2)

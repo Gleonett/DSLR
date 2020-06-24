@@ -1,3 +1,8 @@
+"""
+Script to predict labels with one-vs-all logistic regression.
+It save predicted labels in houses.csv
+"""
+
 import os
 import numpy as np
 import pandas as pd
@@ -5,17 +10,11 @@ from time import time
 from argparse import ArgumentParser
 
 from config import Config
-from dslr.preprocessing import MinMaxScale, StandardScale, fillna
+from dslr.preprocessing import scale, fill_na
 from dslr.multi_classifier import OneVsAllLogisticRegression
 
 
-scale = {
-    "minmax": MinMaxScale(),
-    "standard": StandardScale()
-}
-
-
-def predict(data_path, weights_path, output_folder, config_path):
+def predict(data_path: str, weights_path: str, output_folder: str, config_path: str):
     config = Config(config_path)
     courses = np.array(list(config.features.keys()))
     mask = np.array(list(config.features.values()))
@@ -23,9 +22,9 @@ def predict(data_path, weights_path, output_folder, config_path):
 
     preparation_t = time()
     df = pd.read_csv(data_path)
-    df = fillna(df, choosed_courses)
+    df = fill_na(df, choosed_courses)
 
-    x = np.array(df[choosed_courses].values, dtype=float)
+    x = df[choosed_courses].values
 
     model = OneVsAllLogisticRegression(
         device=config.device,

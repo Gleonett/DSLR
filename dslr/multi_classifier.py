@@ -15,8 +15,8 @@ class OneVsAllLogisticRegression(object):
                  device: str = "cpu",
                  dtype: torch.dtype = torch.float32,
                  transform=None,
-                 lr=0.00001,
-                 max_iterations=50000):
+                 lr=0.001,
+                 max_iterations=100):
 
         self.device = get_device(device)
         self.dtype = dtype
@@ -26,7 +26,7 @@ class OneVsAllLogisticRegression(object):
         self.models = []
         self.labels = None
 
-    def predict(self, x):
+    def predict(self, x: torch.Tensor or np.ndarray):
         if type(x) != torch.Tensor:
             x = to_tensor(x, self.device, self.dtype)
         if self.transform is not None:
@@ -40,7 +40,7 @@ class OneVsAllLogisticRegression(object):
         labels = self.labels[p]
         return labels
 
-    def fit(self, x, y):
+    def fit(self, x: np.ndarray, y: np.ndarray):
         x = to_tensor(x, self.device, self.dtype)
 
         bin_labels = self._split_labels(y)
@@ -51,11 +51,11 @@ class OneVsAllLogisticRegression(object):
             x = self.transform(x)
 
         for labels in bin_labels:
-            model = LogisticRegression(self.device, self.dtype, None, self.lr, self.max_iterations)
+            model = LogisticRegression(self.device, self.dtype, self.lr, self.max_iterations)
             model.fit(x, labels)
             self.models.append(model)
 
-    def _split_labels(self, y):
+    def _split_labels(self, y: np.ndarray):
         self.labels = np.unique(y)
         splitted_labels = np.zeros((self.labels.shape[0], y.shape[0]))
 
@@ -63,19 +63,19 @@ class OneVsAllLogisticRegression(object):
             new_y[np.where(y == label)] = 1
         return splitted_labels
 
-    def save(self, path):
+    def save(self, path: str):
         models_w = {"transform": self.transform.to_dictionary()}
         for model, label in zip(self.models, self.labels):
             models_w[label] = model.to_dictionary()
         torch.save(models_w, path)
 
-    def load(self, path):
+    def load(self, path: str):
         models_w = torch.load(path)
 
         self.transform.from_dictionary(models_w.pop("transform"), self.device, self.dtype)
         self.labels = np.array(list(models_w.keys()))
 
         for w in models_w.values():
-            model = LogisticRegression(self.device, self.dtype, None, self.lr, self.max_iterations)
+            model = LogisticRegression(self.device, self.dtype, self.lr, self.max_iterations)
             model.from_dictionary(w)
             self.models.append(model)

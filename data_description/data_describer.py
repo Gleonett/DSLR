@@ -85,7 +85,7 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
         """
         Compute the percentile of the column elements
         :param feature: column name
-        :param percent: value must be between 0 and 100 inclusive
+        :param percent: value [0, 100]
         :return: float
         """
         arr = sorted(self[feature].dropna())

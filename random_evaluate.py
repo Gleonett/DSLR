@@ -1,3 +1,8 @@
+"""
+Script to train and evaluate one-vs-all logistic regression
+on dataset_train.csv
+"""
+
 import numpy as np
 import pandas as pd
 from time import time
@@ -5,24 +10,20 @@ from argparse import ArgumentParser
 from sklearn.metrics import accuracy_score
 
 from config import Config
-from dslr.preprocessing import MinMaxScale, StandardScale, fillna
+from dslr.preprocessing import scale, fill_na
 from dslr.multi_classifier import OneVsAllLogisticRegression
 
 
-scale = {
-    "minmax": MinMaxScale(),
-    "standard": StandardScale()
-}
-
-
-def train_test_split(x, y, test_size=0.3, random_state=None):
-    if random_state:
-        np.random.seed(random_state)
+def train_test_split(x: np.ndarray,
+                     y: np.ndarray,
+                     test_part=0.3,
+                     random_state: int or None = None):
+    np.random.seed(random_state)
 
     p = np.random.permutation(len(x))
 
-    x_offset = int(len(x) * test_size)
-    y_offset = int(len(y) * test_size)
+    x_offset = int(len(x) * test_part)
+    y_offset = int(len(y) * test_part)
 
     x_train = x[p][x_offset:]
     x_test = x[p][:x_offset]
@@ -33,7 +34,10 @@ def train_test_split(x, y, test_size=0.3, random_state=None):
     return x_train, x_test, y_train, y_test
 
 
-def evaluate(data_path, config_path, test_part, state):
+def evaluate(data_path: str,
+             config_path: str,
+             test_part: float,
+             state: int or None):
     config = Config(config_path)
     courses = np.array(list(config.features.keys()))
     mask = np.array(list(config.features.values()))
@@ -41,14 +45,12 @@ def evaluate(data_path, config_path, test_part, state):
 
     preparation_t = time()
     df = pd.read_csv(data_path)
-    df = fillna(df, choosed_courses)
-    # for course in choosed_courses:
-    #     df = df.dropna(subset=[course])
+    df = fill_na(df, choosed_courses)
 
-    x = np.array(df[choosed_courses].values, dtype=float)
-    y = df.values[:, 1]
+    x = df[choosed_courses].values
+    y = df["Hogwarts House"].values
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=test_part, random_state=state)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_part, state)
 
     model = OneVsAllLogisticRegression(
         device=config.device,
@@ -90,13 +92,13 @@ if __name__ == "__main__":
     parser.add_argument('--test_part',
                         type=float,
                         default=0.3,
-                        help='Percent of test part. "0.3" means model will'
-                             ' train on 0.7 of data and evaluate at other 0.3')
+                        help='Percent of test part. "0.3" means model will '
+                             'train on 0.7 of data and evaluate at other 0.3')
 
     parser.add_argument('--state',
                         type=int or None,
-                        default=5,
-                        help='Random state to reproduce results.'
+                        default=42,
+                        help='Random state to reproduce results. '
                              '"-1" means no random state')
 
     args = parser.parse_args()

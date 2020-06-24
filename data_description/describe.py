@@ -44,7 +44,9 @@ def describe(csv_path: str):
 
 if __name__ == "__main__":
     parser = ArgumentParser()
+
     parser.add_argument('data_path', type=str, help='Path to .csv file')
+
     args = parser.parse_args()
 
     describe(args.data_path)

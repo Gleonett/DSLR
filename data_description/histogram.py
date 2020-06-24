@@ -39,15 +39,19 @@ def show_course_marks_distribution(csv_path: str, course: str):
 
 
 if __name__ == "__main__":
+
     parser = ArgumentParser()
+
     parser.add_argument('--data_path',
                         type=str,
                         default='../data/dataset_train.csv',
                         help='Path to dataset_train.csv file')
+
     parser.add_argument('--course',
                         type=str,
                         default='Care of Magical Creatures',
                         help='Name of the course to plot')
+
     args = parser.parse_args()
 
     show_course_marks_distribution(args.data_path, args.course)

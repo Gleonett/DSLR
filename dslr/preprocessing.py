@@ -6,6 +6,7 @@ https://en.wikipedia.org/wiki/Feature_scaling
 import torch
 import numpy as np
 import pandas as pd
+from torch import Tensor
 
 
 class StandardScale(object):
@@ -13,21 +14,21 @@ class StandardScale(object):
     This method is widely used for normalization in many machine learning algorithms
     x' = (x - mean(x)) / std(x)
     """
-    mean: torch.Tensor
-    std: torch.Tensor
+    mean: Tensor
+    std: Tensor
 
-    def fit(self, x: torch.Tensor):
+    def fit(self, x: Tensor):
         self.mean = x.mean(dim=0)
         self.std = x.std(dim=0)
 
-    def __call__(self, x: torch.Tensor):
+    def __call__(self, x: Tensor):
         return (x - self.mean) / self.std
 
     def to_dictionary(self):
         return {"mean": self.mean, "std": self.std}
 
     def from_dictionary(self,
-                        dictionary: dict,
+                        dictionary: {str: Tensor},
                         device: torch.device,
                         dtype: torch.dtype):
         self.mean = dictionary["mean"].to(device, dtype)
@@ -40,31 +41,37 @@ class MinMaxScale(object):
     range of features to scale the range in [0, 1].
     x' = (x - min(x)) / (max(x) - min(x))
     """
-    min: torch.Tensor
-    max: torch.Tensor
+    min: Tensor
+    max: Tensor
 
-    def fit(self, x: torch.Tensor):
+    def fit(self, x: Tensor):
         self.min = x.min(dim=0).values
         self.max = x.max(dim=0).values
 
-    def __call__(self, x: torch.Tensor):
+    def __call__(self, x: Tensor):
         return (x - self.min) / (self.max - self.min)
 
     def to_dictionary(self):
         return {"min": self.min, "max": self.max}
 
     def from_dictionary(self,
-                        dictionary: dict,
+                        dictionary: {str: Tensor},
                         device: torch.device,
                         dtype: torch.dtype):
         self.min = dictionary["min"].to(device, dtype)
         self.max = dictionary["max"].to(device, dtype)
 
 
-def fillna(df: pd.DataFrame, courses: np.ndarray):
+scale = {
+    "minmax": MinMaxScale(),
+    "standard": StandardScale()
+}
+
+
+def fill_na(df: pd.DataFrame, courses: np.ndarray):
     """
-    This function split data to clusters and replace cluster's nan values with
-    calculated cluster's mean value.
+    This function split data to clusters and replace cluster nan values with
+    calculated cluster mean value.
     "Birthday", "Best Hand" and course name are used for clustering.
     Clusters look like:
         2000 (Birthday) - "Right" (Best Hand) - course1 (course name)
@@ -85,7 +92,6 @@ def fillna(df: pd.DataFrame, courses: np.ndarray):
         years[i] = b.split('-')[0]
     df["Birthday"] = years
 
-    # CLUSTERING
     for year in df["Birthday"].unique():
         for hand in df["Best Hand"].unique():
             for course in courses:
