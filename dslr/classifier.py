@@ -1,5 +1,7 @@
 """
 Logistic regression implementation using PyTorch tensors
+
+https://en.wikipedia.org/wiki/Logistic_regression
 """
 import torch
 import numpy as np

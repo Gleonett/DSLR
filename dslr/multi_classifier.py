@@ -1,3 +1,7 @@
+"""
+One-vs-all logistic regression implementation using PyTorch tensors
+"""
+
 import torch
 import numpy as np
 

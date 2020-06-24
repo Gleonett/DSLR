@@ -1,7 +1,16 @@
+"""
+Some functions for PyTorch
+"""
+
 import torch
+import numpy as np
 
 
-def get_device(device):
+def get_device(device: str):
+    """
+    :param device: "cpu", "cuda" or "cuda:{device_index}"
+    :return: torch.device
+    """
     if "cpu" not in device:
         if torch.cuda.is_available():
             device = torch.device(device)
@@ -12,5 +21,5 @@ def get_device(device):
     return device
 
 
-def to_tensor(x, device, dtype):
+def to_tensor(x: np.ndarray, device: torch.device, dtype: torch.dtype):
     return torch.from_numpy(x).to(device, dtype)
