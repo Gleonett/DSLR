@@ -19,7 +19,7 @@ max_iterations: 100
 scale: "minmax"
 
 
-## Features to train on, look at data/dataset_*.csv
+## Features to train, predict or plot, look at data/dataset_*.csv
 features:
     Arithmancy: False
     Astronomy: False

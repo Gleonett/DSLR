@@ -15,16 +15,15 @@ from dslr.multi_classifier import OneVsAllLogisticRegression
 
 
 def predict(data_path: str, weights_path: str, output_folder: str, config_path: str):
+    # CHOOSE FROM CONFIG FEATURES TO PREDICT
     config = Config(config_path)
-    courses = np.array(list(config.features.keys()))
-    mask = np.array(list(config.features.values()))
-    choosed_courses = courses[mask]
+    courses = config.choosed_features()
 
     preparation_t = time()
     df = pd.read_csv(data_path)
-    df = fill_na(df, choosed_courses)
+    df = fill_na(df, courses)
 
-    x = df[choosed_courses].values
+    x = df[courses].values
 
     model = OneVsAllLogisticRegression(
         device=config.device,

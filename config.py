@@ -3,6 +3,7 @@ Class for loading and storing configurations
 """
 
 import yaml
+import numpy as np
 
 
 class Config(object):
@@ -14,3 +15,8 @@ class Config(object):
 
         for key in config.keys():
             setattr(self, key, config[key])
+
+    def choosed_features(self):
+        features = np.array(list(self.features.keys()))
+        mask = np.array(list(self.features.values()))
+        return features[mask]
