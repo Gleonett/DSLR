@@ -31,7 +31,7 @@ class OneVsAllLogisticRegression(object):
         self.batch_size = batch_size
         self.save_hist = save_hist
         if type(seed) == int:
-            torch.manual_seed(0)
+            torch.manual_seed(seed)
 
     def predict(self, x: torch.Tensor or np.ndarray) -> np.ndarray:
         """

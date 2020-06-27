@@ -6,10 +6,10 @@ device: "cpu"
 ## Learning rate: https://en.wikipedia.org/wiki/Learning_rate
 ## In this implementation: a' = a - lr * gradient,
 ## no additional manipulations to compute lr
-lr: 0.01
+lr: 0.1
 
 ## maximum number of iterations for model training
-epochs: 6000
+epochs: 1100
 
 ## Batch size: https://en.wikipedia.org/wiki/Stochastic_gradient_descent
 ## null - gradient descent: all values will be taken to calculate gradient
