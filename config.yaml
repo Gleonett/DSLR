@@ -1,11 +1,11 @@
 # MODEL PARAMETERS
 
-## torch devices: "cpu", "cuda" or "cuda:{device_index}"
+## PyTorch devices: "cpu", "cuda" or "cuda:{device_index}"
 device: "cpu"
 
 ## Learning rate: https://en.wikipedia.org/wiki/Learning_rate
 ## In this implementation: a' = a - lr * gradient,
-## No additional manipulations to compute lr
+## no additional manipulations to compute lr
 lr: 0.01
 
 ## maximum number of iterations for model training
@@ -14,10 +14,10 @@ max_iterations: 6000
 ## Batch size: https://en.wikipedia.org/wiki/Stochastic_gradient_descent
 ## null - gradient descent: all values will be taken to calculate gradient
 ## 1 - stochastic gradient descent
-## other values are mini-batch or batch gradient descent
-batch_size: 1
+## Other values are mini-batch or batch gradient descent
+batch_size: null
 
-## random seed to reproduce results.
+## Random seed to reproduce results.
 ## seed >= 0
 ## null - means no random seed
 seed: 42

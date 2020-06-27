@@ -21,5 +21,7 @@ def get_device(device: str) -> torch.device:
     return device
 
 
-def to_tensor(x: np.ndarray, device: torch.device, dtype: torch.dtype) -> torch.Tensor:
+def to_tensor(x: np.ndarray,
+              device: torch.device,
+              dtype: torch.dtype) -> torch.Tensor:
     return torch.from_numpy(x).to(device, dtype)

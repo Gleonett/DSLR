@@ -40,22 +40,28 @@ def evaluate(train_path: str,
 if __name__ == '__main__':
     parser = ArgumentParser()
 
-    parser.add_argument('--train_path', type=str, default="data/dataset_train.csv",
+    parser.add_argument('--train_path', type=str,
+                        default="data/dataset_train.csv",
                         help='Path to "dataset_train.csv" file')
 
-    parser.add_argument('--test_path', type=str, default="data/dataset_test.csv",
+    parser.add_argument('--test_path', type=str,
+                        default="data/dataset_test.csv",
                         help='Path to "dataset_test.csv" file')
 
-    parser.add_argument('--truth_path', type=str, default="data/dataset_truth.csv",
+    parser.add_argument('--truth_path', type=str,
+                        default="data/dataset_truth.csv",
                         help='Path to "dataset_truth.csv" file')
 
-    parser.add_argument('--weights_path', type=str, default="data/weights.pt",
+    parser.add_argument('--weights_path', type=str,
+                        default="data/weights.pt",
                         help='Path to save weights file')
 
-    parser.add_argument('--output_folder', type=str, default="data",
+    parser.add_argument('--output_folder', type=str,
+                        default="data",
                         help='Path to folder where to save houses.csv')
 
-    parser.add_argument('--config_path', type=str, default="config.yaml",
+    parser.add_argument('--config_path', type=str,
+                        default="config.yaml",
                         help='Path to .yaml file')
 
     args = parser.parse_args()

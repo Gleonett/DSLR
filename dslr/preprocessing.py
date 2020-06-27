@@ -11,7 +11,8 @@ from torch import Tensor
 
 class StandardScale(object):
     """
-    This method is widely used for normalization in many machine learning algorithms
+    This method is widely used for normalization in
+    many machine learning algorithms
     x' = (x - mean(x)) / std(x)
     """
     mean: Tensor
@@ -111,10 +112,10 @@ def fill_na(df: pd.DataFrame, courses: np.ndarray) -> pd.DataFrame:
     "Birthday", "Best Hand" and course name are used for clustering.
     Clusters look like:
         2000 (Birthday) - "Right" (Best Hand) - course1 (course name)
-                        \                     \_ course2
-                         \                     \_ ...
-                          \_"Left" - course1
-                                   \_ ...
+                        |                     |_ course2
+                        |                     |_ ...
+                        |_"Left" - course1
+                                 |_ ...
         1999 - ...
 
     :param df: dataframe to fill nan values

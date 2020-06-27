@@ -35,11 +35,16 @@ def show_pair_plot(csv_path: str):
             # set y labels
             if col_plt.is_first_col():
                 label = row_course.replace(' ', '\n')
-                l = len(label)
-                if l > 14 and '\n' not in label:
-                    label = label[:int(l/2)] + "\n" + label[int(l/2):]
+                length = len(label)
+                if length > 14 and '\n' not in label:
+                    label = label[:int(length/2)] + "\n" + \
+                            label[int(length/2):]
                 col_plt.set_ylabel(label)
-    plt.legend(df.houses, loc='center left', frameon=False, bbox_to_anchor=(1, 0.5))
+
+    plt.legend(df.houses,
+               loc='center left',
+               frameon=False,
+               bbox_to_anchor=(1, 0.5))
     plt.show()
 
 

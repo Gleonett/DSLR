@@ -28,7 +28,8 @@ class LogisticRegression(object):
 
     def predict(self, x: Tensor) -> Tensor:
         """
-        Calculate the probability of assigning input objects to the first class.
+        Calculate the probability of assigning input objects
+        to the first class.
         :param x: tensor of shape (num_samples, num_features)
         :return: tensor of shape (num_samples)
         """
@@ -36,7 +37,8 @@ class LogisticRegression(object):
 
     def fit(self, x: Tensor, y: Tensor):
         """
-        Train logistic regression on a given training set using the gradient method
+        Train logistic regression on a given training set using
+        the gradient method
         :param x: tensor of shape (num_samples, num_features)
         :param y: tensor of shape (num_samples) - labels
         :return: None
@@ -58,7 +60,9 @@ class LogisticRegression(object):
             self.a += self.lr * tmp_a / perm.shape[0]
             self.b += self.lr * tmp_b / perm.shape[0]
 
-    def _calculate_anti_gradient(self, x: Tensor, y: Tensor) -> (Tensor, Tensor):
+    def _calculate_anti_gradient(self,
+                                 x: Tensor,
+                                 y: Tensor) -> (Tensor, Tensor):
         """
         Calculate anti gradient of logarithm of the likelihood function
         on a given training set

@@ -51,7 +51,9 @@ def evaluate(data_path: str,
     y = df["Hogwarts House"].values
 
     # SPLIT DATA INTO TRAIN AND TEST PART
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_part, config.seed)
+    x_train, x_test, y_train, y_test = train_test_split(x, y,
+                                                        test_part,
+                                                        config.seed)
 
     # CREATE MODEL
     model = OneVsAllLogisticRegression(

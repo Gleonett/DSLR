@@ -57,7 +57,8 @@ class OneVsAllLogisticRegression(object):
 
     def fit(self, x: np.ndarray, y: np.ndarray):
         """
-        Train multiple logistic regression models on given training set. 1 model per label
+        Train multiple logistic regression models on given training set.
+        1 model per label
         :param x: tensor of shape (num_samples, num_features)
         :param y: array with labels of shape (num_samples)
         :return: None
@@ -88,7 +89,8 @@ class OneVsAllLogisticRegression(object):
         """
         Split labels into one-vs-all sets and binarize them
         :param y: array with labels of shape (num_samples)
-        :return: array of shape (num_unique_labels, num_samples) with 0, 1 values
+        :return: array of shape (num_unique_labels, num_samples)
+                with 0, 1 values
         """
         self.labels = np.unique(y)
         splitted_labels = np.zeros((self.labels.shape[0], y.shape[0]))
@@ -116,10 +118,16 @@ class OneVsAllLogisticRegression(object):
         """
         models_w = torch.load(path)
 
-        self.transform.from_dictionary(models_w.pop("transform"), self.device, self.dtype)
+        self.transform.from_dictionary(models_w.pop("transform"),
+                                       self.device,
+                                       self.dtype)
         self.labels = np.array(list(models_w.keys()))
 
         for w in models_w.values():
-            model = LogisticRegression(self.device, self.dtype, self.lr, self.max_iterations, self.batch_size)
+            model = LogisticRegression(self.device,
+                                       self.dtype,
+                                       self.lr,
+                                       self.max_iterations,
+                                       self.batch_size)
             model.from_dictionary(w)
             self.models.append(model)

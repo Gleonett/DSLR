@@ -19,10 +19,10 @@ def clusters_3d(df: pd.DataFrame, courses: np.ndarray):
     "Birthday", "Best Hand" and course name are used for clustering.
     Clusters look like:
         2000 (Birthday) - "Right" (Best Hand) - course1 (course name)
-                        \                     \_ course2
-                         \                     \_ ...
-                          \_"Left" - course1
-                                   \_ ...
+                        |                     |_ course2
+                        |                     |_ ...
+                        |_"Left" - course1
+                                  |_ ...
         1999 - ...
 
     :param df: dataset
@@ -57,7 +57,8 @@ def clusters_3d(df: pd.DataFrame, courses: np.ndarray):
                 mask = (df["Birthday"] == year) & (df["Best Hand"] == hand)
                 cluster = np.array(df.loc[mask, course].dropna())
                 # MIN - MAX SCALING
-                cluster = (cluster - cluster.min()) / (cluster.max() - cluster.min())
+                cluster = (cluster - cluster.min()) /\
+                          (cluster.max() - cluster.min())
                 # CALCULATE MEAN IN CLUSTER
                 mean = cluster.mean()
 

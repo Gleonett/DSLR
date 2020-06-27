@@ -14,7 +14,10 @@ from dslr.preprocessing import scale, fill_na
 from dslr.multi_classifier import OneVsAllLogisticRegression
 
 
-def predict(data_path: str, weights_path: str, output_folder: str, config_path: str):
+def predict(data_path: str,
+            weights_path: str,
+            output_folder: str,
+            config_path: str):
     # CHOOSE FROM CONFIG FEATURES TO PREDICT
     config = Config(config_path)
     courses = config.choosed_features()
@@ -71,4 +74,7 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    predict(args.data_path, args.weights_path, args.output_folder, args.config_path)
+    predict(args.data_path,
+            args.weights_path,
+            args.output_folder,
+            args.config_path)
