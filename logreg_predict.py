@@ -28,8 +28,6 @@ def predict(data_path: str, weights_path: str, output_folder: str, config_path: 
     model = OneVsAllLogisticRegression(
         device=config.device,
         transform=scale[config.scale],
-        lr=config.lr,
-        max_iterations=config.max_iterations
     )
 
     model.load(weights_path)

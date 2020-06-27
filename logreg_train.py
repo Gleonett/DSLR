@@ -29,7 +29,9 @@ def train(data_path: str, weights_path: str, config_path: str):
         device=config.device,
         transform=scale[config.scale],
         lr=config.lr,
-        max_iterations=config.max_iterations
+        max_iterations=config.max_iterations,
+        batch_size=config.batch_size,
+        seed=config.seed
     )
     preparation_t = time() - preparation_t
 

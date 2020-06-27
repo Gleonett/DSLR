@@ -14,9 +14,11 @@ class OneVsAllLogisticRegression(object):
     def __init__(self,
                  device: str = "cpu",
                  dtype: torch.dtype = torch.float32,
-                 transform=None,
-                 lr=0.001,
-                 max_iterations=100):
+                 transform: callable or None = None,
+                 lr: float = 0.001,
+                 max_iterations: int = 100,
+                 batch_size: int or None = None,
+                 seed: int or None = None):
 
         self.device = get_device(device)
         self.dtype = dtype
@@ -25,6 +27,9 @@ class OneVsAllLogisticRegression(object):
         self.max_iterations = max_iterations
         self.models = []
         self.labels = None
+        self.batch_size = batch_size
+        if type(seed) == int:
+            torch.manual_seed(0)
 
     def predict(self, x: torch.Tensor or np.ndarray):
         if type(x) != torch.Tensor:
@@ -51,7 +56,11 @@ class OneVsAllLogisticRegression(object):
             x = self.transform(x)
 
         for labels in bin_labels:
-            model = LogisticRegression(self.device, self.dtype, self.lr, self.max_iterations)
+            model = LogisticRegression(self.device,
+                                       self.dtype,
+                                       self.lr,
+                                       self.max_iterations,
+                                       self.batch_size)
             model.fit(x, labels)
             self.models.append(model)
 

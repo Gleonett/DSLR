@@ -36,8 +36,7 @@ def train_test_split(x: np.ndarray,
 
 def evaluate(data_path: str,
              config_path: str,
-             test_part: float,
-             state: int or None):
+             test_part: float):
     # CHOOSE FROM CONFIG FEATURES TO TRAIN AND PREDICT
     config = Config(config_path)
     courses = config.choosed_features()
@@ -49,13 +48,15 @@ def evaluate(data_path: str,
     x = df[courses].values
     y = df["Hogwarts House"].values
 
-    x_train, x_test, y_train, y_test = train_test_split(x, y, test_part, state)
+    x_train, x_test, y_train, y_test = train_test_split(x, y, test_part, config.seed)
 
     model = OneVsAllLogisticRegression(
         device=config.device,
         transform=scale[config.scale],
         lr=config.lr,
-        max_iterations=config.max_iterations
+        max_iterations=config.max_iterations,
+        batch_size=config.batch_size,
+        seed=config.seed
     )
     preparation_t = time() - preparation_t
 
@@ -94,15 +95,6 @@ if __name__ == "__main__":
                         help='Percent of test part. "0.3" means model will '
                              'train on 0.7 of data and evaluate at other 0.3')
 
-    parser.add_argument('--state',
-                        type=int or None,
-                        default=42,
-                        help='Random state to reproduce results. '
-                             '"-1" means no random state')
-
     args = parser.parse_args()
 
-    if args.state == -1:
-        args.state = None
-
-    evaluate(args.data_path, args.config_path, args.test_part, args.state)
+    evaluate(args.data_path, args.config_path, args.test_part)
