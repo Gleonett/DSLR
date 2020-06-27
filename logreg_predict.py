@@ -20,24 +20,31 @@ def predict(data_path: str, weights_path: str, output_folder: str, config_path: 
     courses = config.choosed_features()
 
     preparation_t = time()
+
+    # READ TEST DATASET AND FILL NAN VALUES
     df = pd.read_csv(data_path)
     df = fill_na(df, courses)
 
+    # CHOOSE FEATURE VALUES
     x = df[courses].values
 
+    # CREATE MODEL
     model = OneVsAllLogisticRegression(
         device=config.device,
         transform=scale[config.scale],
     )
 
+    # LOAD MODEL WEIGHTS
     model.load(weights_path)
 
     preparation_t = time() - preparation_t
 
+    # PREDICT
     predict_t = time()
     p = model.predict(x)
     predict_t = time() - predict_t
 
+    # SAVE PREDICTED VALUES
     pred = pd.DataFrame(p, columns=["Hogwarts House"])
     pred.to_csv(os.path.join(output_folder, "houses.csv"),
                 index_label="Index")
@@ -63,4 +70,5 @@ if __name__ == "__main__":
                         help='Path to .yaml file')
 
     args = parser.parse_args()
+
     predict(args.data_path, args.weights_path, args.output_folder, args.config_path)

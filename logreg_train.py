@@ -18,13 +18,16 @@ def train(data_path: str, weights_path: str, config_path: str):
     config = Config(config_path)
     courses = config.choosed_features()
 
+    # READ TRAIN DATASET AND FILL NAN VALUES
     preparation_t = time()
     df = pd.read_csv(data_path)
     df = fill_na(df, courses)
 
+    # CHOOSE FEATURE AND LABEL VALUES
     x = df[courses].values
     y = df["Hogwarts House"].values
 
+    # CREATE MODEL TO TRAIN
     model = OneVsAllLogisticRegression(
         device=config.device,
         transform=scale[config.scale],
@@ -35,11 +38,14 @@ def train(data_path: str, weights_path: str, config_path: str):
     )
     preparation_t = time() - preparation_t
 
+    # TRAIN MODEL
     train_t = time()
     model.fit(x, y)
     train_t = time() - train_t
 
+    # SAVE WEIGHTS AND SCALE PARAMS
     model.save(weights_path)
+
     print("Preparation time:", np.round(preparation_t, 4))
     print("Training time:", np.round(train_t, 4))
     print("All time:", np.round(preparation_t + train_t, 4))

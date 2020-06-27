@@ -7,7 +7,7 @@ from argparse import ArgumentParser
 from data_describer import HogwartsDataDescriber
 
 
-def abbreviation(string: str):
+def abbreviation(string: str) -> str:
     """
     Abbreviation for title
     :param string:

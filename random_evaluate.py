@@ -41,15 +41,19 @@ def evaluate(data_path: str,
     config = Config(config_path)
     courses = config.choosed_features()
 
+    # READ TRAIN DATASET AND FILL NAN VALUES
     preparation_t = time()
     df = pd.read_csv(data_path)
     df = fill_na(df, courses)
 
+    # CHOOSE FEATURE AND LABEL VALUES
     x = df[courses].values
     y = df["Hogwarts House"].values
 
+    # SPLIT DATA INTO TRAIN AND TEST PART
     x_train, x_test, y_train, y_test = train_test_split(x, y, test_part, config.seed)
 
+    # CREATE MODEL
     model = OneVsAllLogisticRegression(
         device=config.device,
         transform=scale[config.scale],
@@ -60,10 +64,12 @@ def evaluate(data_path: str,
     )
     preparation_t = time() - preparation_t
 
+    # TRAIN MODEL
     train_t = time()
     model.fit(x_train, y_train)
     train_t = time() - train_t
 
+    # PREDICT
     predict_t = time()
     p = model.predict(x_test)
     predict_t = time() - predict_t

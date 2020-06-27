@@ -16,7 +16,7 @@ class Config(object):
         for key in config.keys():
             setattr(self, key, config[key])
 
-    def choosed_features(self):
+    def choosed_features(self) -> np.ndarray:
         features = np.array(list(self.features.keys()))
         mask = np.array(list(self.features.values()))
         return features[mask]

@@ -13,7 +13,7 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
     colors = ['red', 'green', 'blue', 'yellow']
 
     @staticmethod
-    def read_csv(csv_path):
+    def read_csv(csv_path: str):
         """
         Read .csv file
         :param csv_path: path to .csv file
@@ -30,7 +30,7 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
         """
         return np.issubdtype(self[feature].dtype, np.number)
 
-    def count(self, feature: str):
+    def count(self, feature: str) -> int:
         """
         Number of the column elements without nans
         :param feature: column name
@@ -38,7 +38,7 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
         """
         return len(self[feature].dropna())
 
-    def mean(self, feature: str):
+    def mean(self, feature: str) -> float:
         """
         Mean value of the column elements
         :param feature: column name
@@ -46,7 +46,7 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
         """
         return sum(self[feature].dropna()) / self.count(feature)
 
-    def std(self, feature: str):
+    def std(self, feature: str) -> float:
         """
         Compute the standard deviation, a measure of the spread
         of a distribution, of the column elements
@@ -59,7 +59,7 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
         mean = sum(np.abs(dif) ** 2) / self.count(feature)
         return np.sqrt(mean)
 
-    def min(self, feature: str):
+    def min(self, feature: str) -> float:
         """
         Minimum value of the column elements
         :param feature: column name
@@ -70,7 +70,7 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
             tmp = tmp if val > tmp else val
         return tmp
 
-    def max(self, feature: str):
+    def max(self, feature: str) -> float:
         """
         Maximum value of the column elements
         :param feature: column name
@@ -81,7 +81,7 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
             tmp = tmp if val < tmp else val
         return tmp
 
-    def percentile(self, feature: str, percent: float):
+    def percentile(self, feature: str, percent: float) -> float:
         """
         Compute the percentile of the column elements
         :param feature: column name
