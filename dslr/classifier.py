@@ -13,18 +13,18 @@ class LogisticRegression(object):
     a: Tensor
     b: Tensor
 
-    def __init__(self,
-                 device: torch.device,
+    def __init__(self, device: torch.device,
                  dtype: torch.dtype,
-                 lr: float = 0.001,
-                 max_iterations: int = 100,
-                 batch_size: int or None = None):
+                 batch_size: int,
+                 epochs: int = 100,
+                 lr: float = 0.001, save_hist: bool = False):
         self.device = device
         self.dtype = dtype
-        self.lr = lr
-        self.max_iterations = max_iterations
         self.batch_size = batch_size
+        self.lr = lr
+        self.epochs = epochs
         self.iteration = 0
+        self.hist = [] if save_hist else None
 
     def predict(self, x: Tensor) -> Tensor:
         """
@@ -48,7 +48,7 @@ class LogisticRegression(object):
         self.a = torch.randn(1).uniform_(-0.5, 0.5).to(self.device)
         self.b = torch.randn(x.shape[1]).uniform_(-0.5, 0.5).to(self.device)
 
-        for self.iteration in range(self.max_iterations):
+        for self.iteration in range(self.epochs):
 
             # PERMUTATION FOR STOCHASTIC, MINI-BATCH OR BATCH GD
             perm = torch.randperm(x.shape[0])[:self.batch_size]
@@ -59,6 +59,10 @@ class LogisticRegression(object):
             # ADJUST LOGISTIC REGRESSION FREE MEMBER AND COEFFICIENTS
             self.a += self.lr * tmp_a / perm.shape[0]
             self.b += self.lr * tmp_b / perm.shape[0]
+
+            # SAVE HISTORY FOR FUTURE VISUALIZATION
+            if self.hist is not None:
+                self.hist.append(self._calculate_log_likelihood(x, y))
 
     def _calculate_anti_gradient(self,
                                  x: Tensor,
@@ -79,6 +83,20 @@ class LogisticRegression(object):
         # CALCULATE COEFFICIENTS
         db = x.t() @ dif
         return da, db
+
+    def _calculate_log_likelihood(self, x: Tensor, y: Tensor) -> float:
+        """
+        Calculate the logarithm of the likelihood function
+        on a given training set
+        :param x: tensor of shape (num_samples, num_features)
+        :param y: tensor of shape (num_samples) - labels
+        :return: logarithm of the likelihood function
+        """
+        eps = 0.000001
+        p = self.predict(x)
+        log = torch.sum(y * torch.log(p + eps) +
+                        (1.0 - y) * torch.log(1.0 - p + eps))
+        return float(log.cpu().numpy())
 
     def to_dictionary(self) -> {str: Tensor}:
         """

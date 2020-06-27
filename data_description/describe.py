@@ -29,8 +29,9 @@ def describe(csv_path: str):
             print(f'{abbreviation(feature):15.15}', end=' |')
         else:
             print(f'{feature:15.15}', end=' |')
+        print(f'{data.count(feature):>12.4f}', end=' |')
         if data.is_numeric(feature) and data.count(feature) != 0:
-            print(f'{data.count(feature):>12.4f}', end=' |')
+            # print(f'{data.count(feature):>12.4f}', end=' |')
             print(f'{data.mean(feature):>12.4f}', end=' |')
             print(f'{data.std(feature):>12.4f}', end=' |')
             print(f'{data.min(feature):>12.4f}', end=' |')
@@ -39,7 +40,7 @@ def describe(csv_path: str):
             print(f'{data.percentile(feature, 50):>12.4f}', end=' |')
             print(f'{data.percentile(feature, 75):>12.4f}', end=' |\n')
         else:
-            print(f'{"No numerical value to display":>70}')
+            print(f'{"No numerical value to display":>64}')
 
 
 if __name__ == "__main__":

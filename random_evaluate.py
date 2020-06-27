@@ -10,6 +10,7 @@ from argparse import ArgumentParser
 from sklearn.metrics import accuracy_score
 
 from config import Config
+from logreg_train import plot_training
 from dslr.preprocessing import scale, fill_na
 from dslr.multi_classifier import OneVsAllLogisticRegression
 
@@ -36,7 +37,9 @@ def train_test_split(x: np.ndarray,
 
 def evaluate(data_path: str,
              config_path: str,
-             test_part: float):
+             test_part: float,
+             v: bool = False):
+
     # CHOOSE FROM CONFIG FEATURES TO TRAIN AND PREDICT
     config = Config(config_path)
     courses = config.choosed_features()
@@ -60,9 +63,10 @@ def evaluate(data_path: str,
         device=config.device,
         transform=scale[config.scale],
         lr=config.lr,
-        max_iterations=config.max_iterations,
+        epochs=config.epochs,
         batch_size=config.batch_size,
-        seed=config.seed
+        seed=config.seed,
+        save_hist=v
     )
     preparation_t = time() - preparation_t
 
@@ -82,6 +86,9 @@ def evaluate(data_path: str,
     print("Training time:", np.round(train_t, 4))
     print("Prediction time:", np.round(predict_t, 4))
     print("All time:", np.round(preparation_t + train_t + predict_t, 4))
+
+    if v:
+        plot_training(model)
 
 
 if __name__ == "__main__":
@@ -103,6 +110,9 @@ if __name__ == "__main__":
                         help='Percent of test part. "0.3" means model will '
                              'train on 0.7 of data and evaluate at other 0.3')
 
+    parser.add_argument('-v', action="store_true",
+                        help='visualize training')
+
     args = parser.parse_args()
 
-    evaluate(args.data_path, args.config_path, args.test_part)
+    evaluate(args.data_path, args.config_path, args.test_part, args.v)

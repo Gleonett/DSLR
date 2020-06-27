@@ -17,10 +17,11 @@ def evaluate(train_path: str,
              truth_path: str,
              weights_path: str,
              output_folder: str,
-             config_path: str):
+             config_path: str,
+             v: bool = False):
 
     print("Training:")
-    train(train_path, weights_path, config_path)
+    train(train_path, weights_path, config_path, v)
     print('+' * 30)
 
     print("Predicting:")
@@ -64,6 +65,9 @@ if __name__ == '__main__':
                         default="config.yaml",
                         help='Path to .yaml file')
 
+    parser.add_argument('-v', action="store_true",
+                        help='visualize training')
+
     args = parser.parse_args()
 
     evaluate(args.train_path,
@@ -71,4 +75,5 @@ if __name__ == '__main__':
              args.truth_path,
              args.weights_path,
              args.output_folder,
-             args.config_path)
+             args.config_path,
+             args.v)

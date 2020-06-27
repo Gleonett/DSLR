@@ -16,18 +16,20 @@ class OneVsAllLogisticRegression(object):
                  dtype: torch.dtype = torch.float32,
                  transform: callable or None = None,
                  lr: float = 0.001,
-                 max_iterations: int = 100,
+                 epochs: int = 100,
                  batch_size: int or None = None,
-                 seed: int or None = None):
+                 seed: int or None = None,
+                 save_hist: bool = False):
 
         self.device = get_device(device)
         self.dtype = dtype
         self.transform = transform
         self.lr = lr
-        self.max_iterations = max_iterations
+        self.epochs = epochs
         self.models = []
         self.labels = None
         self.batch_size = batch_size
+        self.save_hist = save_hist
         if type(seed) == int:
             torch.manual_seed(0)
 
@@ -63,6 +65,9 @@ class OneVsAllLogisticRegression(object):
         :param y: array with labels of shape (num_samples)
         :return: None
         """
+        if self.batch_size is None:
+            self.batch_size = x.shape[0]
+
         x = to_tensor(x, self.device, self.dtype)
 
         # SPLIT LABELS INTO ONE-VS-ALL SETS
@@ -78,9 +83,10 @@ class OneVsAllLogisticRegression(object):
             # CREATE MODEL FOR CLASSIFICATION OF CURRENT LABEL
             model = LogisticRegression(self.device,
                                        self.dtype,
+                                       self.batch_size,
+                                       self.epochs,
                                        self.lr,
-                                       self.max_iterations,
-                                       self.batch_size)
+                                       self.save_hist)
             # TRAIN MODEL
             model.fit(x, labels)
             self.models.append(model)
@@ -126,8 +132,8 @@ class OneVsAllLogisticRegression(object):
         for w in models_w.values():
             model = LogisticRegression(self.device,
                                        self.dtype,
-                                       self.lr,
-                                       self.max_iterations,
-                                       self.batch_size)
+                                       self.batch_size,
+                                       self.epochs,
+                                       self.lr)
             model.from_dictionary(w)
             self.models.append(model)
