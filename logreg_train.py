@@ -16,7 +16,7 @@ from dslr.multi_classifier import OneVsAllLogisticRegression
 
 def plot_training(model: OneVsAllLogisticRegression):
     """
-    Plot log-likelihood history
+    Plot loss history
     :param model: trained model
     :return: None
     """

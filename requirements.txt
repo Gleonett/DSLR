@@ -1,0 +1,5 @@
+torch==1.5.1
+PyYAML==3.12
+numpy==1.16.4
+pandas==0.25.2
+matplotlib==3.1.0

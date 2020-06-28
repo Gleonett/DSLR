@@ -11,6 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D
 import sys
 sys.path.append("..")
 from config import Config
+from data_description.describe import abbreviation
 
 
 def clusters_3d(df: pd.DataFrame, courses: np.ndarray):
@@ -62,9 +63,12 @@ def clusters_3d(df: pd.DataFrame, courses: np.ndarray):
                 # CALCULATE MEAN IN CLUSTER
                 mean = cluster.mean()
 
+                if len(course) > 15:
+                    course = abbreviation(course)
                 ax.scatter(year, hand, mean,
                            color=cmap(round(i / courses.shape[0], 2)),
                            label=course)
+    courses = [c if len(c) < 15 else abbreviation(c) for c in courses]
     ax.legend(courses)
     plt.show()
 
