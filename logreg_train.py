@@ -28,10 +28,10 @@ def plot_training(model: OneVsAllLogisticRegression):
         ax.plot(epochs, sub_model.hist, label=label)
 
     ax.set_xlabel('Epochs')
-    ax.set_ylabel('log-likelihood')
+    ax.set_ylabel('Loss')
     ax.set_title('Logistic Regression, batch size: {}'
                  .format(model.batch_size))
-    ax.legend(loc="lower right")
+    ax.legend(loc="upper right")
     plt.show()
 
 

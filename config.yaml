@@ -4,9 +4,9 @@
 device: "cpu"
 
 ## Learning rate: https://en.wikipedia.org/wiki/Learning_rate
-## In this implementation: a' = a - lr * gradient,
+## In this implementation: a' = a - lr * gradient / num_samples,
 ## no additional manipulations to compute lr
-lr: 0.1
+lr: 0.2
 
 ## maximum number of iterations for model training
 epochs: 1100

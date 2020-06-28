@@ -9,7 +9,6 @@ from torch import Tensor
 
 
 class LogisticRegression(object):
-
     a: Tensor
     b: Tensor
 
@@ -62,7 +61,7 @@ class LogisticRegression(object):
 
             # SAVE HISTORY FOR FUTURE VISUALIZATION
             if self.hist is not None:
-                self.hist.append(self._calculate_log_likelihood(x, y))
+                self.hist.append(self._loss(x, y))
 
     def _calculate_anti_gradient(self,
                                  x: Tensor,
@@ -84,7 +83,7 @@ class LogisticRegression(object):
         db = x.t() @ dif
         return da, db
 
-    def _calculate_log_likelihood(self, x: Tensor, y: Tensor) -> float:
+    def _loss(self, x: Tensor, y: Tensor) -> float:
         """
         Calculate the logarithm of the likelihood function
         on a given training set
@@ -92,11 +91,12 @@ class LogisticRegression(object):
         :param y: tensor of shape (num_samples) - labels
         :return: logarithm of the likelihood function
         """
-        eps = 0.000001
-        p = self.predict(x)
-        log = torch.sum(y * torch.log(p + eps) +
-                        (1.0 - y) * torch.log(1.0 - p + eps))
-        return float(log.cpu().numpy())
+        # TO PREVENT LOGARITHM OF ZERO
+        p = self.predict(x) + 0.000001
+
+        loss = torch.sum(y * torch.log(p) +
+                         (1.0 - y) * torch.log(1.0 - p)) / -x.shape[0]
+        return float(loss.cpu().numpy())
 
     def to_dictionary(self) -> {str: Tensor}:
         """
