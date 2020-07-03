@@ -42,14 +42,17 @@ This are some visualization utils for dataset:
 ___
 
 ### Training and Evaluating:
-* [logreg_train.py](logreg_train.py) saves `data/weights.pt` (use `-v` flag for visualization)
-* [logreg_predict.py](logreg_predict.py) takes `data/weights.pt` and saves `data/houses.csv`
-* [evaluate.py](evaluate.py) - `logreg_train.py` + `logreg_predict.py` and evaluation on `dataset_truth.csv`
-
-* Parameters for training, including batch size, are stored in [config.yaml](config.yaml)
-
 `Accuracy` with standard parameters is `0.99`
+
+Parameters for training, including batch size, are stored in [config.yaml](config.yaml)
+
+* [logreg_train.py](logreg_train.py) saves `data/weights.pt`
+(use `-v` flag for loss history visualization)
 
 |stochastic GD                                    |                                             batch GD|                                                      GD|
 |-------------------------------------------------|-----------------------------------------------------|--------------------------------------------------------|
 |![histogram](readme_images/loss_batch_size_1.png)|![scatter_plot](readme_images/loss_batch_size_21.png)|![clusters_plot](readme_images/loss_batch_size_1600.png)|
+
+* [logreg_predict.py](logreg_predict.py) takes `data/weights.pt` and saves `data/houses.csv`
+* [evaluate.py](evaluate.py) - `logreg_train.py` + `logreg_predict.py` and evaluating on `dataset_truth.csv`
+* [random_evaluate.py](random_evaluate.py) - training and evaluating on random splitted `dataset_train.csv`

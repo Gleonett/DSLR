@@ -4,12 +4,22 @@ on ground truth dataset - dataset_truth.csv
 """
 
 import os
+import numpy as np
 import pandas as pd
 from argparse import ArgumentParser
-from sklearn.metrics import accuracy_score
 
 from logreg_train import train
 from logreg_predict import predict
+
+
+def accuracy_score(y_true: np.ndarray, y_pred: np.ndarray) -> float:
+    """
+    Accuracy classification score
+    :param y_true: ground truth samples
+    :param y_pred: predictions. Same shape as y_true
+    :return: float
+    """
+    return sum(y_pred == y_true) / len(y_true)
 
 
 def evaluate(train_path: str,
@@ -34,8 +44,8 @@ def evaluate(train_path: str,
     y_pred = pred['Hogwarts House']
     y_true = true['Hogwarts House']
 
-    print("Wrong predictions:", sum(y_true != y_pred))
-    print("Accuracy:", accuracy_score(y_true, y_pred))
+    print("Wrong predictions:", np.sum(y_true != y_pred))
+    print("Accuracy:", np.round(accuracy_score(y_true, y_pred), 4))
 
 
 if __name__ == '__main__':

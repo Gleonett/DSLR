@@ -7,9 +7,9 @@ import numpy as np
 import pandas as pd
 from time import time
 from argparse import ArgumentParser
-from sklearn.metrics import accuracy_score
 
 from config import Config
+from evaluate import accuracy_score
 from logreg_train import plot_training
 from dslr.preprocessing import scale, fill_na
 from dslr.multi_classifier import OneVsAllLogisticRegression
@@ -81,7 +81,8 @@ def evaluate(data_path: str,
     predict_t = time() - predict_t
 
     print("Wrong predictions:", sum(y_test != p))
-    print("Accuracy:", np.round(accuracy_score(y_test, p), 4), end='\n\n')
+    print("Accuracy:", np.round(accuracy_score(y_test, p), 4))
+    print('-' * 10 + "TIME" + '-' * 10)
     print("Preparation time:", np.round(preparation_t, 4))
     print("Training time:", np.round(train_t, 4))
     print("Prediction time:", np.round(predict_t, 4))
