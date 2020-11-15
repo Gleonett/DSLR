@@ -19,7 +19,6 @@ class HogwartsDataDescriber(pd.DataFrame, ABC):
         :param csv_path: path to .csv file
         :return: HogwartsDataDescriber
         """
-        HogwartsDataDescriber(pd.read_csv(csv_path))
         return HogwartsDataDescriber(pd.read_csv(csv_path))
 
     def is_numeric(self, feature: str):
